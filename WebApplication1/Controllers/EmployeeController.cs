@@ -41,5 +41,33 @@ namespace WebApplication1.Controllers
             }
             return View(employees);
         }
+
+        public ActionResult create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Create(EmployeeViewModel employee)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:55642/api/");
+
+                //HTTP POST
+                var postTask = client.PostAsJsonAsync<EmployeeViewModel>("Employee", employee);
+                postTask.Wait();
+
+                var result = postTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
+            ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
+
+            return View(employee);
+        }
     }
 }
