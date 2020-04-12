@@ -33,5 +33,18 @@ namespace WebApplication1.DataAccess
         {
             return employees;
         }
+
+        public Employee UpdateEmployee(Employee employee)
+        {
+            var existingEmployee = employees.Where(s => s.Id == employee.Id).FirstOrDefault<Employee>();
+            if (existingEmployee != null)
+            {
+                existingEmployee.FirstName = employee.FirstName;
+                existingEmployee.LastName = employee.LastName;
+                existingEmployee.Gender = employee.Gender;
+
+            }
+            return existingEmployee;
+        }
     }
 }
