@@ -12,5 +12,6 @@ namespace WebApplication1.DataAccess
         IList<Employee> GetEmployees();
         Employee AddEmployee(Employee employee);
         Employee GetEmployee(int id);
+        Employee UpdateEmployee(Employee employee);
     }
 }

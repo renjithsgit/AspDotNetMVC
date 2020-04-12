@@ -39,6 +39,18 @@ namespace WebApplication1.Controllers.Api
             return dataRepository.GetEmployee(id);
         }
 
-        
+        public IHttpActionResult Put(Employee employee)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("Not a valid data");
+
+            var updatedEmployee = dataRepository.UpdateEmployee(employee);
+            if(updatedEmployee == null)
+                return NotFound();
+
+            return Ok();
+        }
+
+
     }
 }
