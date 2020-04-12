@@ -94,6 +94,30 @@ namespace WebApplication1.Controllers
             return View(employee);
         }
 
+        public ActionResult Details(int Id)
+        {
+            EmployeeViewModel employee = null;
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:55642/api/");
+                //HTTP GET
+                var responseTask = client.GetAsync("employee?id=" + Id.ToString());
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<EmployeeViewModel>();
+                    readTask.Wait();
+
+                    employee = readTask.Result;
+                }
+            }
+
+            return View(employee);
+        }
+
         [HttpPost]
         public ActionResult Edit(EmployeeViewModel employee)
         {
@@ -101,7 +125,7 @@ namespace WebApplication1.Controllers
             {
                 client.BaseAddress = new Uri("http://localhost:55642/api/");
 
-                //HTTP POST
+                //HTTP put
                 var putTask = client.PutAsJsonAsync<EmployeeViewModel>("employee", employee);
                 putTask.Wait();
 
@@ -113,6 +137,26 @@ namespace WebApplication1.Controllers
                 }
             }
             return View(employee);
+        }
+
+        public ActionResult Delete(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:55642/api/");
+
+                //HTTP delete
+                var deleteTask = client.DeleteAsync("employee?id=" + id.ToString());
+                deleteTask.Wait();
+
+                var result = deleteTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+
+                    return RedirectToAction("Index");
+                }
+            }
+            return RedirectToAction("Index");
         }
     }
 

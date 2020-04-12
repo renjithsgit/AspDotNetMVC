@@ -46,5 +46,11 @@ namespace WebApplication1.DataAccess
             }
             return existingEmployee;
         }
+
+        public void DeleteEmployee(int id)
+        {
+            var existingEmployee = employees.Where(s => s.Id == id).FirstOrDefault<Employee>();
+            employees.Remove(existingEmployee);
+        }
     }
 }

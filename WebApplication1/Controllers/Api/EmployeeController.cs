@@ -51,6 +51,12 @@ namespace WebApplication1.Controllers.Api
             return Ok();
         }
 
+        [HttpDelete]
+        public IHttpActionResult Delete(int id)
+        {
+            dataRepository.DeleteEmployee(id);
+            return Ok();
+        }
 
     }
 }
