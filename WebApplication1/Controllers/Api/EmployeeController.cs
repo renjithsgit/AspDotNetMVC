@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using WebApplication1.DataAccess;
@@ -27,16 +29,38 @@ namespace WebApplication1.Controllers.Api
 
         //post http://localhost:55642/api/employee/
         [HttpPost]
-        public Employee Post(Employee employee)
+        public HttpResponseMessage Post(Employee employee)
         {
-            return dataRepository.AddEmployee(employee);
+            try
+            {
+                var addedEmployee = dataRepository.AddEmployee(employee);
+                var message = Request.CreateResponse(HttpStatusCode.Created, addedEmployee);
+                message.Headers.Location = new Uri(Request.RequestUri + addedEmployee.Id.ToString());
+
+                return message;
+            }
+            catch (Exception ex)
+            {
+
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+
+
         }
 
         //get  http://localhost:55642/api/employee/2
         [HttpGet]
-        public Employee Details(int id)
+        public HttpResponseMessage Details(int id)
         {
-            return dataRepository.GetEmployee(id);
+            var employee = dataRepository.GetEmployee(id);
+            if(employee != null)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, employee);
+            }
+            else
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, $"Employee with id = {id.ToString()} not found");
+            }
         }
 
         public IHttpActionResult Put(Employee employee)
